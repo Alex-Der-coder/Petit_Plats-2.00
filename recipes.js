@@ -1,4 +1,86 @@
-const recipes = [
+class Recette {
+    constructor(id, image, name, servings, ingredients , description) {
+        this.id = id;
+        this.image = image;
+        this.name = name;
+        this.servings = servings;
+        this.ingredients = ingredients;
+        this.description = description;
+    }
+
+    afficherDetails() {
+        console.log(`Recette #${this.id} : ${this.name}`);
+        console.log(`Image : ${this.image}`);
+        console.log(`Nombre de portions : ${this.servings}`);
+        console.log("Ingrédients :");
+        console.log(`Description : ${this.description}`);
+        this.ingredients.forEach(ingredient => {
+            let quantityStr = ingredient.quantity ? `${ingredient.quantity} ${ingredient.unit || ''}` : '';
+            console.log(`- ${ingredient.ingredient}: ${quantityStr}`);
+        });
+    }
+
+    creerCarte() {
+        const card = document.createElement("div");
+        card.classList.add("recipe-card"); // Ajoutez des classes CSS pour le style
+    
+        // Créez un tableau pour stocker les noms d'ingrédients
+        const ingredientsArray = [];
+    
+        // Ajoutez un attribut data-filter à la carte pour chaque ingrédient
+        this.ingredients.forEach(ingredient => {
+            if (ingredient.ingredient) {
+                ingredientsArray.push(ingredient.ingredient.toLowerCase().replace(/\s+/g, '-'));
+            }
+        });
+    
+        // Utilisez la méthode join() pour concaténer les noms d'ingrédients en une seule chaîne
+        const ingredientFilterValue = ingredientsArray.join(' ');
+        card.setAttribute('data-filter', ingredientFilterValue);
+    
+        const image = document.createElement("img"); // Élément pour l'image
+        image.src = `assets/images/${this.image}`; // Spécifiez le chemin complet de l'image
+        image.alt = this.name; // Texte alternatif pour l'image
+        card.appendChild(image); // Ajout de l'image à la carte
+    
+        const title = document.createElement("h2");
+        title.textContent = this.name;
+        card.appendChild(title);
+    
+        const description = document.createElement("p");
+        description.textContent = this.description;
+        description.classList.add("font_style");
+        card.appendChild(description);
+    
+        const servings = document.createElement("p");
+        servings.textContent = `Nombre de portions : ${this.servings}`;
+        card.appendChild(servings);
+    
+        const ingredientsHeading = document.createElement("h3"); // Titre pour les ingrédients
+        ingredientsHeading.textContent = "Ingrédients";
+        card.appendChild(ingredientsHeading);
+    
+        const ingredientsList = document.createElement("ul");
+        this.ingredients.forEach(ingredient => {
+            const ingredientItem = document.createElement("li");
+            const quantityStr = ingredient.quantity ? `${ingredient.quantity} ${ingredient.unit || ''}` : '';
+            const ingredientText = `${ingredient.ingredient}: ${quantityStr}`;
+    
+            // Le texte de l'ingrédient est ajouté à la liste des ingrédients
+            ingredientItem.textContent = ingredientText;
+    
+            ingredientsList.appendChild(ingredientItem);
+        });
+        card.appendChild(ingredientsList);
+    
+        return card;
+    }
+ 
+    
+}
+
+
+const recipesData = [
     {
         "id": 1,
         "image": "Recette01.jpg",
@@ -1774,3 +1856,16 @@ const recipes = [
         "ustensils":["rouleau à patisserie","fouet"]
     }
 ]
+
+// Fonction pour afficher les cartes de recettes dans le conteneur
+function displayRecipes() {
+    const recipesContainer = document.getElementById("recipesContainer");
+    recipesData.forEach(recipeData => {
+        const recipe = new Recette(recipeData.id, recipeData.image, recipeData.name, recipeData.servings, recipeData.ingredients,recipeData.description);
+        const recipeCard = recipe.creerCarte();
+        recipesContainer.appendChild(recipeCard);
+    });
+}
+
+// Appel de la fonction pour afficher les cartes de recettes lorsque la page est chargée
+window.addEventListener("load", displayRecipes);

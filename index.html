@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recettes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/3e6c02e09d.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css"> <!-- Lien vers votre fichier CSS pour le style -->
+</head>
+<body>
+    <div class="Header_container">
+        <img class="logo" id="logo" src="./assets/images/Logo.png" alt="homepage header  Logo">
+        <img src="./assets/images/lampos-aritonang-24gR_9lCdes-unsplash.png" alt="homepage header  background">
+        <h1 class="title_recipe">CHERCHEZ PARMI PLUS DE 1500 RECETTES 
+            DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES</h1>
+    </div>
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Rechercher une recette, un ingrédient, ..." aria-label="Rechercher">
+        <div class="container_search"><i class="fa-solid fa-magnifying-glass"></i></div>
+    </div>
+    <h1>Ingrédients</h1>
+    
+    <button id="ingredients-button">Ingrédients</button>
+    
+    <!-- Liste des ingrédients (initialement cachée) -->
+    <div class="ingredients-list" id="ingredients">
+        <input type="text" id="ingredient-search" placeholder="Entrez un ingrédient...">
+        <button class="ingredient-button">Jus de citron</button>
+        <button class="ingredient-button">Glaçons</button>
+        <button class="ingredient-button">Tomate</button>
+        <button class="ingredient-button">Poulet</button>
+        <button class="ingredient-button">Poivron rouge</button>
+        <button class="ingredient-button">Thon en miettes</button>
+        <button class="ingredient-button">Vinaigrette</button>
+        <button class="ingredient-button">Gruyère râpé</button>
+        <button class="ingredient-button">Oeuf</button>
+        <button class="ingredient-button">Crème liquide</button>
+        <button class="ingredient-button">Crème de coco</button>
+    </div>
+    <div id="recipesContainer" class="recipe-container">
+        <!-- Les cartes de recettes seront ajoutées ici -->
+    </div>
+    <script src="recipes.js"></script>
+    <script src="filter.js"></script>
+</body>
+</html>
