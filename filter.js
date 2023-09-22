@@ -1,21 +1,24 @@
-const ingredientsButton = document.getElementById("ingredients-button");
-const ingredientsList = document.getElementById("ingredients");
+const filterRecipes = (filterValue) => {
+  recipeCards.forEach(card => {
+    const cardAppliance = card.getAttribute('data-appliance').toLowerCase();
+    const cardIngredients = card.getAttribute('data-ingredients').toLowerCase();
+    const cardUstensils = card.getAttribute('data-ustensils').toLowerCase();
 
-// Afficher ou masquer la liste des ingrédients lorsque le bouton est cliqué
-ingredientsButton.addEventListener("click", function () {
-    if (ingredientsList.style.display === "none" || ingredientsList.style.display === "") {
-        ingredientsList.style.display = "flex";
-    } else {
-        ingredientsList.style.display = "none";
+    // Vérifiez si la carte correspond à tous les filtres actifs
+    const isApplianceMatch = activeFilters.appliances.length === 0 || activeFilters.appliances.includes(cardAppliance);
+    const areIngredientsMatch = activeFilters.ingredients.length === 0 || activeFilters.ingredients.every(filter => cardIngredients.includes(filter));
+    const areUstensilsMatch = activeFilters.ustensils.length === 0 || activeFilters.ustensils.every(filter => cardUstensils.includes(filter));
+
+    // Si la carte correspond à tous les filtres actifs, affichez-la, sinon masquez-la
+    const isMatch = isApplianceMatch && areIngredientsMatch && areUstensilsMatch;
+
+    if (!isMatch) {
+      // Si la carte ne correspond pas, supprimez-la du tableau
+      const index = Array.from(recipeCards).indexOf(card);
+      recipeCards.splice(index, 1);
+      console.log(recipeCards);
+      createDivWithLength(filteredRecipes);
     }
-});
 
-// Écouteur d'événement pour la saisie dans la zone de recherche
-document.getElementById("ingredient-search").addEventListener("input", function () {
-    // Votre logique de suggestion ici
-});
-
-// Écouteur d'événement pour le bouton de recherche
-document.getElementById("search-button").addEventListener("click", () => {
-    // Votre logique de recherche ici
-});
+  });
+};
