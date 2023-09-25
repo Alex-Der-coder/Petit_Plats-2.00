@@ -30,7 +30,7 @@ function creerCarte(recette) {
   }
 
   // Récupérer les données JSON via fetch
-fetch("data.json")
+fetch("data.Json")
 .then(response => response.json())
 .then(data => {
   console.log(data.length);
