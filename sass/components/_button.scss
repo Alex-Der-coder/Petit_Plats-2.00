@@ -1,0 +1,130 @@
+
+.button_filter , .size_filter {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 10%;
+  position: relative;
+  background-color: white;
+  border: none;
+  border-radius: 11px;
+  height: 45px;
+}
+
+
+.ingredient-button , .appareil-button , .ustensil-button { 
+  background-color: white;
+  border-left-width: 0px;
+  border-left-style: solid;
+  border-top-width: 0px;
+  border-top-style: solid;
+  border-right-width: 0px;
+  border-right-style: solid;
+  border-bottom-width: 0px;
+  border-bottom-style: solid;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  width: 100%;
+  width:100%;
+  display: flex;
+  justify-content: start;
+  padding-left: 8%;
+}
+
+.button_filter {
+  padding-left: 1%;
+}
+
+@mixin list-common-styles {
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  background-color: white;
+  border-radius: 0 0 11px 0;
+  height: 250px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin-top: 3%;
+  margin-left: 2%;
+  width: 11%;
+  
+}
+
+
+
+
+.appareils-list {
+  @include list-common-styles;
+  left: 30%;
+  display: none;
+}
+
+.ustensils-list {
+  @include list-common-styles;
+  left: 60%;
+  display: none;
+}
+
+.ingredients-list {
+  @include list-common-styles;
+  left: 3.517px;
+  display: none;
+}
+
+.ingredient-button , .appareil-button , .ustensil-button   {
+  &:hover {
+    background: #FFD15B;
+  }
+}
+
+
+
+
+.number_recipes {
+  position: absolute;
+  margin-left: 116%;
+  width: 8%;
+  font-family: 'Anton', sans-serif;
+}
+
+#ingredients-search , #appareils-search , #ustensils-search {
+  margin-top: 8%;
+  width: 76%;
+  margin-left: 7%;
+}
+
+.appareil-button , .ustensil-button
+.fa-chevron-up { 
+  padding-right: 6%;
+}
+
+
+
+#ingredient-search {
+  width: 88%;
+}
+
+
+.container_search {
+  align-self: center;
+  background-color: #1B1B1B;
+  color: #FFFFFF;
+  border-radius: 6px;
+  width: 4%;
+  height: 76%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1%;
+}
+
+
+
+.button_delete {
+border: none;
+  background-color: white;
+  font-size: 23px;
+  color: #7A7A7A;
+  margin-left: 48%;
+  display: none;
+}

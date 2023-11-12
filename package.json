@@ -1,0 +1,15 @@
+{
+  "name": "petitsplats2.0",
+  "version": "1.0.0",
+  "description": "Projet du parcours de Concepteur d'application Javascript / React",
+  "main": "recipes.js",
+  "scripts": {
+    "sass": "sass --watch sass/main.scss:public/css/style.css --style compressed" ,
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sass": "^1.69.2"
+  }
+}
