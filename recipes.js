@@ -1,70 +1,105 @@
 function creerCarte(recette) {
-    const card = document.createElement("div");
-    card.classList.add("recipe-card"); // Ajoutez des classes CSS pour le style
+  const card = document.createElement("div");
+  card.classList.add("recipe-card"); // Ajoutez des classes CSS pour le style
   
-    // Créez un tableau pour stocker les noms d'ingrédients
-    const ingredientsArray = [];
+  // Créez un tableau pour stocker les noms d'ingrédients, ustensiles, appareil et le titre
+  const filtersArray = [];
   
-    // Ajoutez un attribut data-filter à la carte pour chaque ingrédient
-    recette.ingredients.forEach(ingredient => {
-      if (ingredient.ingredient) {
-        ingredientsArray.push(ingredient.ingredient.toLowerCase().replace(/\s+/g, '-'));
-      }
+  // Ajoutez le titre à l'attribut data-filter
+  filtersArray.push(recette.name.toLowerCase().replace(/\s+/g, ' '));
+  
+  // Ajoutez un attribut data-filter à la carte pour chaque ingrédient
+  recette.ingredients.forEach(ingredient => {
+    if (ingredient.ingredient) {
+      filtersArray.push(ingredient.ingredient.toLowerCase().replace(/\s+/g, ' '));
+    }
+  });
+  
+  // Ajoutez les ustensiles à l'attribut data-filter
+  if (recette.ustensils) {
+    recette.ustensils.forEach(ustensil => {
+      filtersArray.push(ustensil.toLowerCase().replace(/\s+/g, ' '));
     });
-  
-    card.innerHTML = `
-      <img src="assets/images/${recette.image}" alt="${recette.name}">
-      <span class="price"> ${recette.time}min</span>
-      <h2>${recette.name}</h2>
-      <p class="letter_typographie">Recette</p>
-      <p class="font_style">${recette.description}</p>
-      <p class="letter_typographie">Ingrédients</p>
-      <ul>
-          ${recette.ingredients.map(ingredient => `
-              <li>${ingredient.ingredient}: ${ingredient.quantity || ''} ${ingredient.unit || ''}</li>
-          `).join('')}
-      </ul>
-    `;
-  
-    return card;
   }
+  
+  // Ajoutez l'appareil à l'attribut data-filter
+  if (recette.appliance) {
+    filtersArray.push(recette.appliance.toLowerCase().replace(/\s+/g, ' '));
+  }
+  
+  // Créez une chaîne de filtres en joignant les éléments du tableau
+  const filtersString = filtersArray.join(' ');
+  
+  card.innerHTML = `
+  <img src="assets/images/${recette.image}" alt="${recette.name}">
+  <span class="price">${recette.time} min</span>
+  <h2>${recette.name}</h2>
+  <p class="letter_typographie">Recette</p>
+  <p class="font_style">${recette.description}</p>
+  <p class="letter_typographie">Ingrédients</p>
+  <ul class="ingredient-container">
+    ${recette.ingredients.map((ingredient, index) => `
+      <li>
+        <div class="ingredient-div ${recette.ingredients.length === 5 && index === 4 ? 'alternative_disposition_ingredient' : ''}">
+          <div class="ingredient-name">${ingredient.ingredient}</div>
+          <div class="ingredient-quantity">${ingredient.quantity ? ingredient.quantity : '-' } ${ingredient.unit || ''}</div>
+        </div>
+      </li>
+    `).join('')}
+  </ul>
+`;
+
+  // Ajoutez l'attribut data-filter à la carte
+  card.setAttribute('data-filter', filtersString);
+  
+  return card;
+}
+
 
   // Récupérer les données JSON via fetch
-fetch("data.Json")
+fetch("data.json")
 .then(response => response.json())
 .then(data => {
   console.log(data.length);
-
+  
   
   // Supposons que data soit un tableau d'objets de recettes
   const container = document.getElementById("recipesContainer");
   const ingredientsList = document.getElementById("ingredients");
-    const appareilsList = document.getElementById("appareils");
-    const ustensilsList = document.getElementById("ustensils");
-
+  const appareilsList = document.getElementById("appareils");
+  const ustensilsList = document.getElementById("ustensils");
+  
   const uniqueIngredients = [];
   const uniqueAppareils = [];
   const uniqueUstensils = [];
-
+  
   const createDivWithLength = (data) => {
     const length = data.length;
     console.log(length);
-  
-    // Créer une nouvelle div
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("number_recipes");
-    // Créer une balise p à l'intérieur de la div et y placer la valeur de la longueur
-    const newParagraph = document.createElement("p");
-    newParagraph.textContent = `${length} recettes`;
-  
-    // Ajouter la balise p à l'intérieur de la div
-    newDiv.appendChild(newParagraph);
-  
-    // Ajouter la div à l'élément avec la classe .container_filter (vous devez avoir cet élément dans votre HTML)
-    const containerFilter = document.querySelector(".container_filter");
-    containerFilter.appendChild(newDiv);
+    
+    // Trouver la première div existante avec la classe "number_recipes"
+    const existingDiv = document.querySelector(".number_recipes");
+    
+    if (existingDiv) {
+      // Mettre à jour le texte de la balise p à l'intérieur de la div existante
+      const paragraph = existingDiv.querySelector("p");
+      paragraph.textContent = `${length} recettes`;
+    } else {
+      // Si la div n'existe pas, créez-la comme vous l'avez déjà fait
+      const newDiv = document.createElement("div");
+      newDiv.classList.add("number_recipes");
+      
+      const newParagraph = document.createElement("p");
+      newParagraph.textContent = `${length} recettes`;
+      
+      newDiv.appendChild(newParagraph);
+      
+      // Ajouter la div à l'élément avec la classe .container_filter
+      const containerFilter = document.querySelector(".container_filter");
+      containerFilter.appendChild(newDiv);
+    }
   };
-
+  
   createDivWithLength(data);
   // Créez une carte pour chaque recette dans les données JSON
   data.forEach(recette => {
@@ -77,15 +112,13 @@ fetch("data.Json")
         }
       }
     });
-
-
-
+    
     // Vérifiez si l'appareil de la recette n'est pas déjà dans le tableau uniqueAppareils
     const applianceName = recette.appliance.toLowerCase();
     if (!uniqueAppareils.includes(applianceName)) {
       uniqueAppareils.push(applianceName);
     }
-
+    
     // Ajoutez les ustensiles de cette recette au tableau uniqueUstensils
     recette.ustensils.forEach(ustensil => {
       const ustensilName = ustensil.toLowerCase();
@@ -93,80 +126,438 @@ fetch("data.Json")
         uniqueUstensils.push(ustensilName);
       }
     });
-
+    
     // Créez une carte de recette
     const recipeCard = creerCarte(recette);
     container.appendChild(recipeCard);
-
-    // Ajoutez un attribut data-filter à la carte pour cette recette
-    recipeCard.setAttribute('data-filter', [applianceName, ...uniqueIngredients, ...uniqueUstensils].join(' '));
+    
   });
 
 
+  
   const toggleListDisplay = (button, list) => {
     button.addEventListener("click", function () {
       if (list.style.display === "flex") {
         list.style.display = "none";
+        button.style.borderRadius = "11px 11px 11px 11px"; // Réinitialiser le border-radius
       } else {
         list.style.display = "flex";
+        button.style.borderRadius = "11px 11px 0 0"; // Appliquer le border-radius uniquement en haut
       }
     });
   };
-  
-  
-  
-  
+
+
   // Gestionnaire d'événement pour le bouton Ingrédients
   const ingredientsButton = document.getElementById("ingredients-button");
- 
+  
   toggleListDisplay(ingredientsButton, ingredientsList);
   
   // Gestionnaire d'événement pour le bouton Appareils
   const appareilsButton = document.getElementById("appareils-button");
-
+  
   toggleListDisplay(appareilsButton, appareilsList);
   
   // Gestionnaire d'événement pour le bouton Ustensiles
   const ustensilsButton = document.getElementById("ustensils-button");
-
-  toggleListDisplay(ustensilsButton, ustensilsList);
   
+  toggleListDisplay(ustensilsButton, ustensilsList);
 
-  function createButtons(list, container) {
-    list.forEach(item => {
+  function createIngredientsButtons(ingredientsList, container) {
+    ingredientsList.forEach(item => {
       const button = document.createElement("button");
       button.classList.add("ingredient-button");
       button.textContent = item;
-      
-      // Ajoutez un gestionnaire d'événement "click" à chaque bouton créé
+      const ingredientsList = document.getElementById("ingredients");
       button.addEventListener('click', () => {
-        // Vous pouvez ajouter ici le code pour réagir au clic du bouton
-        console.log(`Bouton "${item}" cliqué`);
+        const ingredientClicked = item;
+        console.log(`Bouton "${ingredientClicked}" cliqué`);
+  
+        if (!activeFilters.ingredients.includes(ingredientClicked)) {
+          activeFilters.ingredients.push(ingredientClicked);
+          ingredientsList.style.display = "none";
+        } else {
+          // Gérer le cas où l'ingrédient est déjà dans les filtres actifs
+          // Vous pouvez afficher un message d'erreur ou effectuer une autre action appropriée.
+          console.log("Cet ingrédient est déjà sélectionné.");
+        }
+        console.log(activeFilters);
+        
+        filterRecipes();
+        mettreAJourFiltres();
       });
-      
+  
       container.appendChild(button);
     });
   }
-  // Utiliser les tableaux uniques pour créer des boutons
-  createButtons(uniqueIngredients, ingredientsList);
-  createButtons(uniqueAppareils, appareilsList);
-  createButtons(uniqueUstensils, ustensilsList);
+  
+
+  function createAppareilsButtons(appareilsList, container) {
+    appareilsList.forEach(item => {
+      const button = document.createElement("button");
+      button.classList.add("appareil-button");
+      button.textContent = item;
+      const appareilsList = document.getElementById("appareils");
+      button.addEventListener('click', () => {
+        const appareilClicked = item;
+        console.log(`Bouton "${appareilClicked}" cliqué`);
+
+  
+        if (!activeFilters.ingredients.includes(appareilClicked)) {
+          activeFilters.ingredients.push(appareilClicked);
+          appareilsList.style.display = "none";
+        } else {
+          // Gérer le cas où l'ingrédient est déjà dans les filtres actifs
+          // Vous pouvez afficher un message d'erreur ou effectuer une autre action appropriée.
+          console.log("Cet ingrédient est déjà sélectionné.");
+        }
+        console.log(activeFilters);
+        filterRecipes();
+        mettreAJourFiltres();
+      });
+  
+      container.appendChild(button);
+    });
+  }
+  
+
+  function createUstensilsButtons(ustensilsList, container) {
+    ustensilsList.forEach(item => {
+      const button = document.createElement("button");
+      button.classList.add("ustensil-button");
+      button.textContent = item;
+      const ustensilsList = document.getElementById("ustensils");
+      button.addEventListener('click', () => {
+        const ustensilClicked = item;
+        console.log(`Bouton "${ustensilClicked}" cliqué`);
+  
+        if (!activeFilters.ingredients.includes(ustensilClicked)) {
+          activeFilters.ingredients.push(ustensilClicked);
+          appareilsList.style.display = "none";
+        } else {
+          // Gérer le cas où l'ingrédient est déjà dans les filtres actifs
+          // Vous pouvez afficher un message d'erreur ou effectuer une autre action appropriée.
+          console.log("Cet ingrédient est déjà sélectionné.");
+        }
+        console.log(activeFilters);
+        ustensilsList.style.display = "none";
+        filterRecipes();
+        mettreAJourFiltres();
+      });
+  
+      container.appendChild(button);
+    });
+  }
+  
+  
+  const activeFilters = {
+    ingredients: [], // Vous pouvez également ajouter des tableaux pour d'autres types de filtres (appareils, ustensiles, etc.) si nécessaire
+  };
+  
+  // Ajoutez une classe spécifique à la div contenant les spans
+  var divForSpans = document.querySelector(".spans-container");
+  
+  function mettreAJourFiltres() {
+    var container = document.querySelector(".container_filter_recipe");
+    
+    // Si la div contenant les spans existe déjà, supprimez-la
+    if (divForSpans) {
+      container.removeChild(divForSpans);
+    }
+    
+    // Créez une nouvelle div pour les spans
+    divForSpans = document.createElement("div");
+    divForSpans.classList.add("spans-container");
+    
+    // Parcourez les filtres actifs et créez un span pour chaque filtre
+    activeFilters.ingredients.forEach(function (filtre) {
+      var span = document.createElement("span");
+      span.textContent = filtre;
+      
+      // Ajoutez un bouton de suppression à chaque span
+      var closeButton = document.createElement("button");
+      closeButton.textContent = "X";
+      closeButton.classList.add("close-button");
+
+      
+      // Ajoutez un gestionnaire d'événement pour supprimer le filtre
+      closeButton.addEventListener('click', function () {
+        supprimerFiltre(filtre);
+      });
+      
+      // Ajoutez le bouton de suppression au span
+      span.appendChild(closeButton);
+      
+      divForSpans.appendChild(span);
+    });
+
+    container.style.marginBottom = "3%";
+
+    // Ajoutez la nouvelle div avec les spans au conteneur
+    container.appendChild(divForSpans);
+  }
+  // Fonction pour supprimer un filtre
+  const beforefilter = Array.from(document.querySelectorAll('.recipe-card'));
+  
+  // Fonction pour restaurer les recettes
+  function restaurerRecettes() {
+    // Sélectionnez le conteneur de recettes
+    const recipeContainer = document.querySelector(".recipe-container");
+    
+    // Videz le conteneur existant
+    recipeContainer.innerHTML = '';
+    
+    // Ajoutez les recettes stockées dans "beforefilter" au conteneur
+    beforefilter.forEach(function (recipe) {
+      recipeContainer.appendChild(recipe.cloneNode(true));
+    });
+    
+    // Réinitialisez le contenu de "recipeCards" avec les recettes restaurées
+    recipeCards = Array.from(document.querySelectorAll('.recipe-card'));
+    
+    createDivWithLength(recipeCards);
+  }
+  
+  
+  function supprimerFiltre(filtre) {
+    handleDeleteButtonClick();
+    var index = activeFilters.ingredients.indexOf(filtre);
+    if (index !== -1) {
+      activeFilters.ingredients.splice(index, 1);
+      console.log(activeFilters);
+      mettreAJourFiltres();
+  
+      // Vérifiez la longueur des filtres actifs
+      if (activeFilters.ingredients.length === 0) {
+        var container = document.querySelector(".container_filter_recipe");
+        container.style.marginBottom = "unset";
+        restaurerRecettes();
+      } else if (activeFilters.ingredients.length === 1) {
+        restaurerRecettes();
+        filterRecipes();
+        // Si la longueur est égale à 1, effectuez une action spécifique ici
+        // Remplacez le commentaire par le code que vous souhaitez exécuter
+      } else {
+        // Si la longueur est supérieure à 1, réappliquez les filtres
+        filterRecipes();
+      }
+    }
+  }
+  
+  
+  function filterRecipes() {
+    const filteredRecipeCards = [];
+
+    for (let i = 0; i < recipeCards.length; i++) {
+        const card = recipeCards[i];
+        const cardFilters = card.getAttribute('data-filter').toLowerCase();
+        const activeFiltersLowerCase = activeFilters.ingredients.map(filter => filter.toLowerCase());
+        
+        let isCardMatching = true;
+        
+        if (activeFiltersLowerCase.length > 0) {
+            for (let j = 0; j < activeFiltersLowerCase.length; j++) {
+                if (!cardFilters.includes(activeFiltersLowerCase[j])) {
+                    isCardMatching = false;
+                    break;
+                }
+            }
+        }
+
+        if (isCardMatching) {
+            filteredRecipeCards.push(card);
+        }
+    }
+
+    recipeCards.length = 0;
+    Array.prototype.push.apply(recipeCards, filteredRecipeCards);
+
+    createDivWithLength(recipeCards);
+    updateRecipeContainer();
+  }
+  
+  let recipeCards = Array.from(document.querySelectorAll('.recipe-card'));
+  console.log(recipeCards);
+
+  function updateRecipeContainer() {
+    
+    const recipesContainer = document.getElementById('recipesContainer');
+    
+    // Supprime tous les enfants de la div recipesContainer
+    while (recipesContainer.firstChild) {
+      recipesContainer.removeChild(recipesContainer.firstChild);
+    }
+    
+    // Ajoute les cartes filtrées au contenu de recipesContainer
+    recipeCards.forEach(card => {
+      recipesContainer.appendChild(card);
+    });
+    
+  }
+
+  function handleIngredientsSearch() {
+    const searchInput = document.getElementById('ingredients-search');
+    const searchText = searchInput.value.toLowerCase();
+    console.log(searchInput);
+    const ingredientsList = document.querySelectorAll('.ingredients-list .ingredient-button');
+  
+    const filteredIngredients = Array.from(ingredientsList).filter(button => {
+      const buttonText = button.textContent.toLowerCase();
+      return buttonText.includes(searchText);
+    });
+  
+    // Cachez les boutons qui ne correspondent pas à la recherche
+    ingredientsList.forEach(button => {
+      button.style.display = filteredIngredients.includes(button) ? 'block' : 'none';
+    });
+  }
+
+  function handleIngredientsSearch() {
+    const searchInput = document.getElementById('ingredients-search');
+    const searchText = searchInput.value.toLowerCase();
+    const ingredientsList = document.querySelectorAll('.ingredients-list .ingredient-button');
+  
+    const filteredIngredients = Array.from(ingredientsList).filter(button => {
+      const buttonText = button.textContent.toLowerCase();
+      return buttonText.includes(searchText);
+    });
+  
+    // Cachez les boutons qui ne correspondent pas à la recherche
+    ingredientsList.forEach(button => {
+      button.style.display = filteredIngredients.includes(button) ? 'block' : 'none';
+    });
+  }
+  
+  function searchAppareils() {
+    // Récupérez les éléments du DOM
+    const appareilsSearchInput = document.getElementById('appareils-search');
+    const appareilsButtons = document.querySelectorAll('.appareils-list .appareil-button');
+  
+    // Ajoutez un gestionnaire d'événements pour la recherche
+    appareilsSearchInput.addEventListener('input', () => {
+      const searchText = appareilsSearchInput.value.toLowerCase();
+      
+      // Parcourez les boutons d'appareils et filtrez-les en fonction de la recherche
+      appareilsButtons.forEach(button => {
+        const buttonFilter = button.getAttribute('data-filter').toLowerCase();
+        
+        if (buttonFilter.includes(searchText)) {
+          button.style.display = 'block'; // Affichez les boutons correspondants
+        } else {
+          button.style.display = 'none'; // Cachez les boutons non correspondants
+        }
+      });
+    });
+  }
+
+  function searchUstensils() {
+    const ustensilsSearchInput = document.getElementById('ustensils-search');
+    const ustensilsButtons = document.querySelectorAll('.ustensils-list .ustensil-button');
+  
+    ustensilsSearchInput.addEventListener('input', () => {
+      const searchText = ustensilsSearchInput.value.toLowerCase();
+  
+      ustensilsButtons.forEach(button => {
+        const buttonFilter = button.getAttribute('data-filter').toLowerCase();
+  
+        if (buttonFilter.includes(searchText)) {
+          button.style.display = 'block';
+        } else {
+          button.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  
+
+  function searchRecipesAndFilters() {
+    const searchInput = document.getElementById('search-input');
+    const searchText = searchInput.value.toLowerCase();
+  
+    if (searchText.length >= 3) {
+      // Update activeFilters with the search input
+      activeFilters.ingredients.push(searchText);
+      buttonDelete.style.display = 'block';
+      console.log(activeFilters.ingredients);
+      filterRecipes();
+      mettreAJourFiltres();
+    } else if (searchText.length === 0) {
+      // If the input length is zero, call the restaurerRecettes function
+      restaurerRecettes();
+      mettreAJourFiltres();
+
+    } else if (searchText.length == 3) {
+      // Si la longueur du texte de recherche dépasse 4 caractères, appeler la fonction de tri
+      restaurerRecettes();
+      filterRecipes();
+      mettreAJourFiltres();
+    }
+  }
+  
+  // Écoutez le clic sur le bouton
+  const searchButton = document.getElementById('search-button');
+
+  searchButton.addEventListener('click', function() {
+    searchButton.style.backgroundColor = '#FFD15B';
+    searchRecipesAndFilters();
+  });
+ 
+const searchInput = document.getElementById('search-input');
+const buttonDelete = document.getElementById('button_delete');
 
 
 
-// Ajouter des attributs data-filter aux boutons
-const buttonGroups = document.querySelectorAll('#appareils button, #ingredients button, #ustensils button');
+function handleDeleteButtonClick() {
+  // Efface le contenu de l'input de recherche
+  searchInput.value = '';
 
-// Parcourez les groupes de boutons et attribuez l'attribut "data-filter" avec le texte en minuscules
-buttonGroups.forEach(group => {
-  group.setAttribute('data-filter', group.textContent.toLowerCase());
-});
+  // Cache le bouton de suppression
+  buttonDelete.style.display = 'none';
 
+  // Rétablir la couleur d'arrière-plan d'origine du bouton de recherche
+  searchButton.style.backgroundColor = '#1b1b1b';
+
+  // Appeler les fonctions pour restaurer et filtrer les recettes
+  restaurerRecettes();
+  filterRecipes();
+}
+
+
+  
+  searchRecipesAndFilters();
+  
+createIngredientsButtons(uniqueIngredients, document.getElementById('ingredients'), filterRecipes);
+createAppareilsButtons(uniqueAppareils, document.getElementById('appareils'), filterRecipes);
+createUstensilsButtons(uniqueUstensils, document.getElementById('ustensils'), filterRecipes);
+
+
+
+// Associez les fonctions de recherche aux champs de recherche
+const ingredientsSearchInput = document.getElementById('ingredients-search');
+ingredientsSearchInput.addEventListener('input', handleIngredientsSearch);
+
+
+const appareilsSearchInput = document.getElementById('appareils-search');
+appareilsSearchInput.addEventListener('input',  searchAppareils);
+
+const ustensilsSearchInput = document.getElementById('ustensils-search');
+ustensilsSearchInput.addEventListener('input',  searchUstensils);
+
+  
+  // Ajouter des attributs data-filter aux boutons
+  const buttonGroups = document.querySelectorAll('#appareils button, #ingredients button, #ustensils button');
+  
+  // Parcourez les groupes de boutons et attribuez l'attribut "data-filter" avec le texte en minuscules
+  buttonGroups.forEach(group => {
+    group.setAttribute('data-filter', group.textContent.toLowerCase());
+  });
+  
   // Vous avez maintenant les tableaux uniqueIngredients, uniqueAppareils et uniqueUstensils contenant les valeurs uniques
   console.log("Ingrédients uniques :", uniqueIngredients);
   console.log("Appareils uniques :", uniqueAppareils);
   console.log("Ustensiles uniques :", uniqueUstensils);
-
+  
 })
 .catch(error => {
   console.error("Erreur lors de la récupération des données JSON :", error);
