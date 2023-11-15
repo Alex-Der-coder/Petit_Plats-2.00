@@ -326,19 +326,14 @@ fetch("data.json")
       activeFilters.ingredients.splice(index, 1);
       console.log(activeFilters);
       mettreAJourFiltres();
-  
-      // Vérifiez la longueur des filtres actifs
       if (activeFilters.ingredients.length === 0) {
         var container = document.querySelector(".container_filter_recipe");
         container.style.marginBottom = "unset";
         restaurerRecettes();
-      } else if (activeFilters.ingredients.length === 1) {
+      } else if (activeFilters.ingredients.length === 1 || activeFilters.ingredients.length === 2 || activeFilters.ingredients.length === 3 ) {
         restaurerRecettes();
         filterRecipes();
-        // Si la longueur est égale à 1, effectuez une action spécifique ici
-        // Remplacez le commentaire par le code que vous souhaitez exécuter
       } else {
-        // Si la longueur est supérieure à 1, réappliquez les filtres
         filterRecipes();
       }
     }
@@ -383,12 +378,10 @@ fetch("data.json")
     
     const recipesContainer = document.getElementById('recipesContainer');
     
-    // Supprime tous les enfants de la div recipesContainer
     while (recipesContainer.firstChild) {
       recipesContainer.removeChild(recipesContainer.firstChild);
     }
     
-    // Ajoute les cartes filtrées au contenu de recipesContainer
     recipeCards.forEach(card => {
       recipesContainer.appendChild(card);
     });
@@ -396,115 +389,188 @@ fetch("data.json")
   }
 
   function handleIngredientsSearch() {
+    // Récupérez les éléments du DOM
     const searchInput = document.getElementById('ingredients-search');
-    const searchText = searchInput.value.toLowerCase();
-    console.log(searchInput);
     const ingredientsList = document.querySelectorAll('.ingredients-list .ingredient-button');
+    const searchMainInput = document.getElementById('search-input');
   
-    const filteredIngredients = Array.from(ingredientsList).filter(button => {
-      const buttonText = button.textContent.toLowerCase();
-      return buttonText.includes(searchText);
-    });
+    // Fonction pour filtrer les boutons en fonction du texte de recherche
+    function filterButtons(input, buttons) {
+      const searchText = input.value.toLowerCase();
   
-    // Cachez les boutons qui ne correspondent pas à la recherche
-    ingredientsList.forEach(button => {
-      button.style.display = filteredIngredients.includes(button) ? 'block' : 'none';
-    });
+      // Filtrer les boutons en fonction du texte de recherche
+      const filteredButtons = Array.from(buttons).filter(button => {
+        const buttonText = button.textContent.toLowerCase();
+        return buttonText.includes(searchText);
+      });
+  
+      // Cachez les boutons qui ne correspondent pas à la recherche
+      buttons.forEach(button => {
+        button.style.display = filteredButtons.includes(button) ? 'block' : 'none';
+      });
+    }
+  
+    function resetSearch() {
+
+      const buttonGroups = document.querySelectorAll('#appareils button, #ingredients button, #ustensils button');
+      // Afficher tous les boutons
+      buttonGroups.forEach(button => {
+          button.style.display = 'block';
+      });
   }
 
-  function handleIngredientsSearch() {
-    const searchInput = document.getElementById('ingredients-search');
-    const searchText = searchInput.value.toLowerCase();
-    const ingredientsList = document.querySelectorAll('.ingredients-list .ingredient-button');
-  
-    const filteredIngredients = Array.from(ingredientsList).filter(button => {
-      const buttonText = button.textContent.toLowerCase();
-      return buttonText.includes(searchText);
+    // Ajoutez un gestionnaire d'événements pour la recherche d'ingrédients
+    searchInput.addEventListener('input', () => {
+      filterButtons(searchInput, ingredientsList);
     });
   
-    // Cachez les boutons qui ne correspondent pas à la recherche
-    ingredientsList.forEach(button => {
-      button.style.display = filteredIngredients.includes(button) ? 'block' : 'none';
+    // Ajoutez un gestionnaire d'événements pour la recherche principale
+    searchMainInput.addEventListener('input', () => {
+      filterButtons(searchMainInput, ingredientsList); // Utilisez les mêmes boutons d'ingrédients
     });
   }
+  const searchInput = document.getElementById('search-input');
+  const searchText = searchInput.value.toLowerCase();
+  // Appelez la fonction handleIngredientsSearch pour l'initialisation
+  handleIngredientsSearch();
   
+
   function searchAppareils() {
     // Récupérez les éléments du DOM
     const appareilsSearchInput = document.getElementById('appareils-search');
     const appareilsButtons = document.querySelectorAll('.appareils-list .appareil-button');
+    const searchInput = document.getElementById('search-input');
   
-    // Ajoutez un gestionnaire d'événements pour la recherche
-    appareilsSearchInput.addEventListener('input', () => {
-      const searchText = appareilsSearchInput.value.toLowerCase();
-      
-      // Parcourez les boutons d'appareils et filtrez-les en fonction de la recherche
-      appareilsButtons.forEach(button => {
+    // Fonction pour filtrer les boutons en fonction du texte de recherche
+    function filterButtons(input, buttons) {
+      const searchText = input.value.toLowerCase();
+  
+      // Parcourez les boutons et filtrez-les en fonction de la recherche
+      buttons.forEach(button => {
         const buttonFilter = button.getAttribute('data-filter').toLowerCase();
-        
+  
         if (buttonFilter.includes(searchText)) {
           button.style.display = 'block'; // Affichez les boutons correspondants
         } else {
           button.style.display = 'none'; // Cachez les boutons non correspondants
         }
       });
+    }
+  
+    // Ajoutez un gestionnaire d'événements pour la recherche d'appareils
+    appareilsSearchInput.addEventListener('input', () => {
+      filterButtons(appareilsSearchInput, appareilsButtons);
+    });
+  
+    // Ajoutez un gestionnaire d'événements pour la recherche principale
+    searchInput.addEventListener('input', () => {
+      filterButtons(searchInput, appareilsButtons); // Utilisez les mêmes boutons d'appareils
     });
   }
+  
+  // Appelez la fonction searchAppareils pour l'initialisation
+  searchAppareils();
+  
 
   function searchUstensils() {
+    // Récupérez les éléments du DOM
     const ustensilsSearchInput = document.getElementById('ustensils-search');
     const ustensilsButtons = document.querySelectorAll('.ustensils-list .ustensil-button');
+    const searchInput = document.getElementById('search-input');
   
-    ustensilsSearchInput.addEventListener('input', () => {
-      const searchText = ustensilsSearchInput.value.toLowerCase();
+    // Fonction pour filtrer les boutons en fonction du texte de recherche
+    function filterButtons(input, buttons) {
+      const searchText = input.value.toLowerCase();
   
-      ustensilsButtons.forEach(button => {
+      // Parcourez les boutons et filtrez-les en fonction de la recherche
+      buttons.forEach(button => {
         const buttonFilter = button.getAttribute('data-filter').toLowerCase();
   
         if (buttonFilter.includes(searchText)) {
-          button.style.display = 'block';
+          button.style.display = 'block'; // Affichez les boutons correspondants
         } else {
-          button.style.display = 'none';
+          button.style.display = 'none'; // Cachez les boutons non correspondants
         }
       });
+    }
+  
+    // Ajoutez un gestionnaire d'événements pour la recherche d'ustensils
+    ustensilsSearchInput.addEventListener('input', () => {
+      filterButtons(ustensilsSearchInput, ustensilsButtons);
+    });
+  
+    // Ajoutez un gestionnaire d'événements pour la recherche principale
+    searchInput.addEventListener('input', () => {
+      filterButtons(searchInput, ustensilsButtons); // Utilisez les mêmes boutons d'ustensils
     });
   }
-
   
+  // Appelez la fonction searchUstensils pour l'initialisation
+  searchUstensils();
+
+
 
   function searchRecipesAndFilters() {
     const searchInput = document.getElementById('search-input');
     const searchText = searchInput.value.toLowerCase();
   
+    handleIngredientsSearch(searchText);
+    searchAppareils(searchText);
+    searchUstensils(searchText);
+  
     if (searchText.length >= 3) {
       // Update activeFilters with the search input
-      activeFilters.ingredients.push(searchText);
+      activeFilters.ingredients = [searchText];
+
       buttonDelete.style.display = 'block';
       console.log(activeFilters.ingredients);
       filterRecipes();
       mettreAJourFiltres();
-    } else if (searchText.length === 0) {
-      // If the input length is zero, call the restaurerRecettes function
+    } else {
+      // Clear filters and recipes if the input length is less than 3
       restaurerRecettes();
       mettreAJourFiltres();
-
-    } else if (searchText.length == 3) {
-      // Si la longueur du texte de recherche dépasse 4 caractères, appeler la fonction de tri
-      restaurerRecettes();
-      filterRecipes();
-      mettreAJourFiltres();
+      updateRecipeContainer();
     }
   }
   
-  // Écoutez le clic sur le bouton
+  // Listen for the click event on the search button
   const searchButton = document.getElementById('search-button');
-
+  
   searchButton.addEventListener('click', function() {
-    searchButton.style.backgroundColor = '#FFD15B';
-    searchRecipesAndFilters();
+    // Only trigger the search function if the input length is greater than or equal to 3
+    const searchInput = document.getElementById('search-input');
+    if (searchInput.value.length >= 3) {
+      searchButton.style.backgroundColor = '#FFD15B';
+      searchRecipesAndFilters();
+    }
+    // You may want to add an else statement to handle cases where the input length is less than 3
   });
+  
+  // Optionally, you may also want to handle the Enter key press to trigger the search
+
+  
+  searchInput.addEventListener('input', function() {
+    if (searchInput.value.length >= 3) {
+      searchButton.style.backgroundColor = '#FFD15B';
+      searchRecipesAndFilters();
+    }
+  });
+
+  searchInput.addEventListener('input', function() {
+    if (searchInput.value.length >= 0) {
+      searchButton.style.backgroundColor = '#1b1b1b';
+      resetSearch();
+    }
+  });
+
+
+  
+
  
-const searchInput = document.getElementById('search-input');
+
 const buttonDelete = document.getElementById('button_delete');
+
 
 
 
