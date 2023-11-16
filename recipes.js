@@ -57,7 +57,7 @@ function creerCarte(recette) {
 
 
   // Récupérer les données JSON via fetch
-fetch("data.json")
+fetch("https://raw.githubusercontent.com/Alex-Der-coder/Petit_Plats-2.00/main/data.Json")
 .then(response => response.json())
 .then(data => {
   console.log(data.length);
