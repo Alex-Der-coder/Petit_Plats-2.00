@@ -56,12 +56,12 @@ function creerCarte(recette) {
 }
 
 
-  // Récupérer les données JSON via fetch
-fetch("https://raw.githubusercontent.com/Alex-Der-coder/Petit_Plats-2.00/main/data.Json")
+  // Récupérer les données JSON via fetch https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/Alex-Der-coder/Petit_Plats-2.00/main/data.Json"
+fetch("data.Json")
 .then(response => response.json())
 .then(data => {
   console.log(data.length);
-  
+  console.log(data); 
   
   // Supposons que data soit un tableau d'objets de recettes
   const container = document.getElementById("recipesContainer");
@@ -341,21 +341,32 @@ fetch("https://raw.githubusercontent.com/Alex-Der-coder/Petit_Plats-2.00/main/da
   
   
   function filterRecipes() {
-    
-    const filteredRecipeCards = recipeCards.filter(card => {
-      const cardFilters = card.getAttribute('data-filter').toLowerCase();
-      const activeFiltersLowerCase = activeFilters.ingredients.map(filter => filter.toLowerCase());
-      const isCardMatching = activeFiltersLowerCase.length === 0 || activeFiltersLowerCase.every(activeFilter => {
-        // Vérifiez si au moins un filtre actif est inclus dans la chaîne cardFilters
-        return cardFilters.includes(activeFilter);
-      });
-      
-      return isCardMatching;
-    });
-    
+    const filteredRecipeCards = [];
+
+    for (let i = 0; i < recipeCards.length; i++) {
+        const card = recipeCards[i];
+        const cardFilters = card.getAttribute('data-filter').toLowerCase();
+        const activeFiltersLowerCase = activeFilters.ingredients.map(filter => filter.toLowerCase());
+        
+        let isCardMatching = true;
+        
+        if (activeFiltersLowerCase.length > 0) {
+            for (let j = 0; j < activeFiltersLowerCase.length; j++) {
+                if (!cardFilters.includes(activeFiltersLowerCase[j])) {
+                    isCardMatching = false;
+                    break;
+                }
+            }
+        }
+
+        if (isCardMatching) {
+            filteredRecipeCards.push(card);
+        }
+    }
+
     recipeCards.length = 0;
     Array.prototype.push.apply(recipeCards, filteredRecipeCards);
-    
+
     createDivWithLength(recipeCards);
     updateRecipeContainer();
   }

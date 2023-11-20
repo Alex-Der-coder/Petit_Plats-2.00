@@ -1,0 +1,76 @@
+@media only screen and (min-width: 320px) {
+
+
+    .Header_container img {
+    margin-left: -4%;
+    margin-top: -2%;
+    margin-right: -4%;
+    width: 104%;
+}
+
+body {
+overflow-x: hidden;
+}
+
+#logo  {
+    width: 27%;
+    margin-left: 0%;
+  top: 2%;
+}
+
+.title_recipe {
+    width: 85%;
+    font-size: 0.5rem;
+    margin-bottom: 19%;
+}
+
+.container_search {
+width: 13%;
+}
+
+
+#recipesContainer {
+flex-direction: column;
+padding-top: 22%;
+}
+
+.recipe-card {
+width: 99%;
+}
+ 
+.price {
+width: 17%;
+  height: 7%;
+  margin-left: 73%;
+  margin-top: -43%;
+  font-weight: bold;
+}
+
+
+.container_filter {
+    flex-wrap: wrap;
+    height: 1.5rem;
+    
+
+}
+
+
+.button_filter {
+width: 53%;
+background-color: #ededed;
+display: none;
+}
+
+.number_recipes {
+width: 50%;
+bottom: 69.5%;
+}
+
+.spans-container span {
+height: 2.5rem;
+  margin-top: -2%;
+  margin-left: -4%;
+  width: 50%;
+}
+
+}
