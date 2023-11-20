@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recettes</title>
+    <title>PetitsPlats2.0 </title>
     <meta name="description" content="Site de cuisine vous aidant à choisir vos recettes avec son algorithme de tri en fonction d'ingrédients, ustensiles, et appareils. Trouvez des idées délicieuses pour vos repas.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/3e6c02e09d.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="public/css/style.css"> <!-- Lien vers votre fichier CSS pour le style -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
 </head>
 <body>
     <div class="Header_container">
         <img class="logo" id="logo" src="./assets/images/Logo.png" alt="homepage header  Logo">
-        <img src="./assets/images/lampos-aritonang-24gR_9lCdes-unsplash.png" alt="homepage header  background">
+        <img src="https://res.cloudinary.com/df1z0o9nt/image/upload/t_main_algo/Algo/lampos-aritonang-24gR_9lCdes-unsplash.jpg?dpr_auto&q_auto&f_auto&fl=2592000" alt="homepage header  background">
         <h1 class="title_recipe">CHERCHEZ PARMI PLUS DE 1500 RECETTES 
             DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES</h1>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Rechercher une recette, un ingrédient, ..." aria-label="Rechercher">
-                <button class="button_delete" id="button_delete">
-                    <i class="fas fa-times"></i></button>
+                <button class="button_delete" id="button_delete" aria-label="Delete">
+                    <i aria-hidden="true" class="fas fa-times"></i></button>
                 <div class="container_search" id="search-button">
                   <i class="fa-solid fa-magnifying-glass"></i></div>
             </div>
