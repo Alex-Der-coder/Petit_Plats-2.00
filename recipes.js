@@ -31,7 +31,7 @@ function creerCarte(recette) {
   const filtersString = filtersArray.join(' ');
   
   card.innerHTML = `
-  <img src="assets/images/${recette.image}" alt="${recette.name}">
+  <img src="${recette.image}" alt="${recette.name}">
   <span class="price">${recette.time} min</span>
   <h2>${recette.name}</h2>
   <p class="letter_typographie">Recette</p>
